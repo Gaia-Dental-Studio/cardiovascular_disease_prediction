@@ -4,39 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heart Disease Check</title>
-    <script>
-        function submitForm(event) {
-            event.preventDefault(); // Prevent the form from submitting normally
-            
-            // Collect form data
-            const formData = new FormData(document.getElementById('heartForm'));
-            
-            // Send form data to the server using Fetch API
-            fetch('/predict', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Display the result and conclusions
-                document.getElementById('result').innerText = `Prediction Result: ${data.result}`;
-                const conclusionsList = document.getElementById('conclusions');
-                conclusionsList.innerHTML = ''; // Clear previous conclusions
-                data.conclusions.forEach(conclusion => {
-                    const li = document.createElement('li');
-                    li.textContent = conclusion;
-                    conclusionsList.appendChild(li);
-                });
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    </script>
 </head>
 <body>
     <h1>Heart Disease Prediction</h1>
-    <form id="heartForm" onsubmit="submitForm(event)">
-        <!-- <label for="name">Name:</label>
-        <input type="text" id="name" name="name"><br> -->
+    <form action="/" method="POST">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name"><br>
 
         <label for="age">Age:</label>
         <input type="number" id="age" name="age" required><br>
@@ -99,14 +72,20 @@
         <select id="thal" name="thal">
             <option value="1">Fixed</option>
             <option value="2">Normal</option>
-            <option value="3">Reversable</option>
+            <option value="3">Reversible</option>
         </select><br>
 
         <input type="submit" value="Submit">
     </form>
 
-    <h2 id="result"></h2>
-    <!-- <h3>Conclusions:</h3> -->
-    <ul id="conclusions"></ul>
+    {% if result %}
+        <h3>Result: {{ result }}</h3>
+        <h3>Conclusions:</h3>
+        <ul>
+        {% for conclusion in conclusions %}
+            <li>{{ conclusion }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 </body>
 </html>
